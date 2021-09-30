@@ -3,13 +3,16 @@
 #include <string.h>
 #include "hw.h"
 #include "types.h"
+#include "mem.h"
 #include "vbe.h"
+
 
 //the actual vbe framebuffer
 uint8 *screen;
 
 //the back buffer that the user builds frames to
 uint8 *buffer;
+
 
 int vbe_Init()
 {
@@ -78,7 +81,7 @@ int vbe_Init()
     }
 
     //clear the buffer
-    memset(buffer, 0, VBE_AREA);
+    memset_32(buffer, 0, VBE_AREA);
 }
 
 void vbe_Swap()
@@ -87,9 +90,9 @@ void vbe_Swap()
     //not sure how to do this? use vga to determine? run some asm to check status bit?
     
     //copy back buffer to frame buffer
-    memcpy(screen,buffer,VBE_AREA);
+    memcpy_32(screen,buffer,VBE_AREA);
     //clear back buffer
-    memset(buffer,0,VBE_AREA);
+    memset_32(buffer,0,VBE_AREA);
 }
 
 void vbe_End()
@@ -216,3 +219,4 @@ void line(int x1, int y1,
         }
     }
 }
+

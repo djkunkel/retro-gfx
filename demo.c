@@ -9,7 +9,6 @@
 #include <math.h>
 #include "types.h"
 #include "vbe.h"
-#include "hw.h"
 
 int pos=0;
 
