@@ -10,18 +10,22 @@
 #include "types.h"
 #include "vbe.h"
 
-int pos=0;
+//game state
+int pos = 0;
 
+//update game state for this frame
 void update()
 {
-    pos = (pos+1)%VBE_WIDTH;
+    pos = (pos + 1) % VBE_WIDTH;
 }
 
+//draw this frame
 void draw()
 {
-    line(pos,10,pos,470,10);
+    line(pos, 10, pos, 470, 10);
 }
 
+//run a loop of drawing, swapping, syncing (todo)
 int main(void)
 {
     if (!vbe_Init())
@@ -29,7 +33,7 @@ int main(void)
         return EXIT_FAILURE;
     }
 
-    for(int i=0; i < VBE_WIDTH*4; i++)
+    for (int i = 0; i < VBE_WIDTH * 4; i++)
     {
         update();
         draw();
@@ -42,4 +46,3 @@ int main(void)
 
     return 0;
 }
-

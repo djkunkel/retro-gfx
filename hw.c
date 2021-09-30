@@ -161,5 +161,4 @@ void hw_waitForRetrace(void)
 {
   /*https://github.com/JesseMaurais/VGAlib/blob/master/VGAio.h*/
   //not sure how to do this yet or even if its needed
-
 }

@@ -18,5 +18,4 @@ int hw_EnableA20(void);
 
 void hw_waitForRetrace(void);
 
-
 #endif
