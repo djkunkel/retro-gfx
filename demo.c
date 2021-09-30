@@ -11,18 +11,20 @@
 #include "vbe.h"
 
 //game state
-int pos = 0;
+int x_pos = 0;
+int y_pos = 20;
 
 //update game state for this frame
 void update()
 {
-    pos = (pos + 1) % VBE_WIDTH;
+    x_pos = (x_pos + 1) % VBE_WIDTH;
+    y_pos = (int)(sin(x_pos/40.0)*100+120);
 }
 
 //draw this frame
 void draw()
 {
-    line(pos, 10, pos, 470, 10);
+    line(x_pos, y_pos, x_pos, 480-y_pos, 10);
 }
 
 //run a loop of drawing, swapping, syncing (todo)
