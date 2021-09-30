@@ -28,7 +28,7 @@ int vbe_Init()
     if ((err = vbe_GetInfo(&vbeInfo)) != 0x4F)
     {
         printf("GetVbeInfo() failed (0x%08X)!\n", err);
-        return EXIT_FAILURE;
+        return 0;
     }
 
     printf("%.4s %u.%u \"%s\"\n",
@@ -36,31 +36,31 @@ int vbe_Init()
            vbeInfo.VbeVersion >> 8, vbeInfo.VbeVersion & 0xFF,
            ((vbeInfo.OemStringPtr >> 16) << 4) + (vbeInfo.OemStringPtr & 0xFFFF));
 
-    if (vbeInfo.VbeVersion < 0x0200)
-    {
-        printf("VBE 2.0+ required!\n");
-        return EXIT_FAILURE;
-    }
+    // if (vbeInfo.VbeVersion < 0x0200)
+    // {
+    //     printf("VBE 2.0+ required!\n");
+    //     return 0;
+    // }
 
     // Get and check VBE mode info
 
-    if ((err = vbe_GetModeINfo(&modeInfo, VBE_MODE)) != 0x4F)
+    if ((err = vbe_GetModeInfo(&modeInfo, VBE_MODE)) != 0x4F)
     {
         printf("GetVbeModeInfo() failed (0x%08X)!\n", err);
-        return EXIT_FAILURE;
+        return 0;
     }
 
     if ((modeInfo.ModeAttributes & 0x80) == 0 || modeInfo.PhysBasePtr == 0)
     {
         printf("Linear Frame Buffer not available!\n", err);
-        return EXIT_FAILURE;
+        return 0;
     }
 
     // Map the linear frame buffer into the virtual address space
     if (!hw_IsInEvenNumberedMegabyte(modeInfo.PhysBasePtr, VBE_AREA) && !hw_EnableA20())
     {
         printf("Linear Frame Buffer at 0x%08X (physical) needs A20 enabled!\n", modeInfo.PhysBasePtr);
-        return EXIT_FAILURE;
+        return 0;
     }
     screen = modeInfo.PhysBasePtr;
 
@@ -68,7 +68,7 @@ int vbe_Init()
     if ((err = vbe_SetMode(VBE_MODE | (1 << 14) /*use LFB*/)) != 0 && err != 0x4F)
     {
         printf("SetVbeMode() failed (0x%08X)!\n", err);
-        return EXIT_FAILURE;
+        return 0;
     }
 
     //create our backing buffer
@@ -77,11 +77,13 @@ int vbe_Init()
     if(buffer==0)
     {
         puts("Unable to allocate backing buffer!");
-        return EXIT_FAILURE;    
+        return 0;    
     }
 
     //clear the buffer
     memset_32(buffer, 0, VBE_AREA);
+
+    return 1;
 }
 
 void vbe_Swap()
@@ -117,7 +119,7 @@ int vbe_GetInfo(tVbeInfo *p)
         "pop   es");
 }
 
-int vbe_GetModeINfo(tVbeModeInfo *p, uint16 mode)
+int vbe_GetModeInfo(tVbeModeInfo *p, uint16 mode)
 {
     asm(
         "mov   ax, 0x4f01\n"

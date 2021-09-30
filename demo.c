@@ -35,7 +35,7 @@ int main(void)
         return EXIT_FAILURE;
     }
 
-    for (int i = 0; i < VBE_WIDTH * 4; i++)
+    for (int i = 0; i < VBE_WIDTH * 10; i++)
     {
         update();
         draw();

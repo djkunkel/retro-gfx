@@ -23,7 +23,7 @@ void vbe_End();
 void vbe_Swap();
 
 int vbe_GetInfo(tVbeInfo *p);
-int vbe_GetModeINfo(tVbeModeInfo *p, uint16 mode);
+int vbe_GetModeInfo(tVbeModeInfo *p, uint16 mode);
 int vbe_SetMode(uint16 mode);
 void pixel(int x, int y,
            uint8 color);
