@@ -2,7 +2,7 @@
 A tiny, simple VESA graphics library for DOS
 
 # Purpose
-1. This is a purely educational exercise for me, and I claim no responsibility for the correctness of this code.
+1. This is a purely educational exercise for me and my friends to learn more about low level programming and the systems we grew up using as kids.
 
 # Building
 
