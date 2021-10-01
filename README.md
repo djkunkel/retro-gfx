@@ -4,7 +4,9 @@ A tiny, simple VESA graphics library for DOS
 # Building
 
 1. Use Smaller C for Windows with NASM.
-2. See build.sh for the command line needed to build. I will remove the relative copy from this script at some point.
+2. See build.sh in each example for how to build.
+3. NASM and Smaller C must be in your path.
+4. I build with the Windows x64 builds of NASM and Smaller C
 
 # Acknowledgements
 
