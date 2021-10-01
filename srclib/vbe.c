@@ -8,7 +8,7 @@
 
 
 //the actual vbe framebuffer
-uint8 *screen;
+static uint8 *screen;
 
 //the back buffer that the user builds frames to
 uint8 *buffer;
@@ -22,9 +22,6 @@ int vbe_Init()
 
     // Get and check VBE info
 
-    //https://github.com/JesseMaurais/VGAlib/blob/master/VGAio.c
-    //can we wait for retrace?
-
     if ((err = vbe_GetInfo(&vbeInfo)) != 0x4F)
     {
         printf("GetVbeInfo() failed (0x%08X)!\n", err);
@@ -36,11 +33,11 @@ int vbe_Init()
            vbeInfo.VbeVersion >> 8, vbeInfo.VbeVersion & 0xFF,
            ((vbeInfo.OemStringPtr >> 16) << 4) + (vbeInfo.OemStringPtr & 0xFFFF));
 
-    // if (vbeInfo.VbeVersion < 0x0200)
-    // {
-    //     printf("VBE 2.0+ required!\n");
-    //     return 0;
-    // }
+    if (vbeInfo.VbeVersion < 0x0200)
+    {
+        printf("VBE 2.0+ required!\n");
+        return 0;
+    }
 
     // Get and check VBE mode info
 
@@ -86,7 +83,7 @@ int vbe_Init()
     return 1;
 }
 
-void vbe_Swap()
+void vbe_Swap(uint8 color)
 {
     //wait for sync
     //not sure how to do this? use vga to determine? run some asm to check status bit?
@@ -94,7 +91,7 @@ void vbe_Swap()
     //copy back buffer to frame buffer
     memcpy_32(screen,buffer,VBE_AREA);
     //clear back buffer
-    memset_32(buffer,0,VBE_AREA);
+    memset_32(buffer,color,VBE_AREA);
 }
 
 void vbe_End()

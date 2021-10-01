@@ -10,9 +10,13 @@
 #include "types.h"
 #include "vbe.h"
 
+extern uint8 *buffer;
+extern uint8 *screen;
+
 //game state
 int x_pos = 0;
 int y_pos = 20;
+uint8 bg_color = 0;
 
 //update game state for this frame
 void update()
@@ -30,19 +34,27 @@ void draw()
 //run a loop of drawing, swapping, syncing (todo)
 int main(void)
 {
+    
+    //init vbe with the hardcoded size
     if (!vbe_Init())
     {
         return EXIT_FAILURE;
     }
+        
+    //get the address of the buffer so we can tell the user where it was 
+    uint32 buffAddress = &buffer;
 
-    for (int i = 0; i < VBE_WIDTH * 10; i++)
+    //do our loop 3 times until we can read the keyboard or something better
+    for (int i = 0; i < VBE_WIDTH * 3; i++)
     {
         update();
         draw();
-        vbe_Swap();
+        vbe_Swap(bg_color);
     }
 
     vbe_End();
+
+    printf("The back buffer was at 0x%08x\n",buffAddress);
 
     printf("This has been a production of the Retro Renaissance...\n");
 

@@ -1,0 +1,5 @@
+-dosu -c -Wall -o gfx.a
+
+hw.c
+vbe.c
+mem.c

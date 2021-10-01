@@ -1,0 +1,4 @@
+-dosu -Wall -I ../../srclib/ -o demo.exe
+
+../../srclib/gfx.a
+demo.c

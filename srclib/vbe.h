@@ -3,7 +3,6 @@
 
 #include "types.h"
 
-extern uint8 *screen;
 
 enum
 {
@@ -20,7 +19,7 @@ enum
 
 int vbe_Init();
 void vbe_End();
-void vbe_Swap();
+void vbe_Swap(uint8 color);
 
 int vbe_GetInfo(tVbeInfo *p);
 int vbe_GetModeInfo(tVbeModeInfo *p, uint16 mode);
