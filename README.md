@@ -19,5 +19,5 @@ A tiny, simple VESA graphics library for DOS
 
 # Acknowledgements
 
-Thanks to Alexey Frunze for creating Smaller C which has allowed this experimental effor to exist. 
-Many of the routines were modified from his example code that is included with https://github.com/alexfru/SmallerC
+Thanks to Alexey Frunze for creating Smaller C which has allowed this experimental effort to exist. 
+Many of the routines were used directly and some modified from his example code that is included with https://github.com/alexfru/SmallerC
