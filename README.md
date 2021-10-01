@@ -14,6 +14,7 @@ A tiny, simple VESA graphics library for DOS
 # Where does it run?
 1. DOSBox-X
 2. A couple of real DOS machines that have VESA compliant video adapters and support the linear framebuffer and mode 0x101 (640x480x8) for now.
+3. It runs in UNREAL mode (https://en.wikipedia.org/wiki/Unreal_mode) so EMM386 or Windows must not be loaded in order for it to work.
 
 
 # Acknowledgements
