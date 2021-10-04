@@ -3,6 +3,7 @@
 
 #include "types.h"
 
+extern uint8 *buffer;
 
 enum
 {

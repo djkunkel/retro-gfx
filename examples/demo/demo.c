@@ -10,9 +10,6 @@
 #include "types.h"
 #include "vbe.h"
 
-extern uint8 *buffer;
-extern uint8 *screen;
-
 //game state
 int x_pos = 0;
 int y_pos = 20;
