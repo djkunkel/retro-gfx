@@ -61,8 +61,8 @@ typedef struct
   uint8 DirectColorModeInfo; // direct color mode attributes
   // Mandatory information for VBE 2.0 and above
   uint32 PhysBasePtr; // physical address forflat memory frame buffer
-  uint32 rsvd2;       // Reserved - always set to 0
-  uint16 rsvd3;       // Reserved - always set to 0
+  uint32 OffScreenMemoryOffset;       // Reserved - always set to 0
+  uint16 OffScreenMemSize;       // Reserved - always set to 0
   // Mandatory information for VBE 3.0 and above
   uint16 LinBytesPerScanLine;  // bytes per scan line for linear modes
   uint8 BnkNumberOfImagePages; // number of images for banked modes

@@ -44,3 +44,15 @@ void *memset_32(void *s, uint8 c, unsigned n)
 
     return s;
 }
+
+//https://www.daniweb.com/programming/software-development/threads/359724/vesa-programming-where-to-start
+void* memset_fast(void *s, uint32 c, uint32 n)
+{
+    asm(
+        "mov   ecx, [ebp+16]\n"
+        "mov   eax, [ebp+12]\n"
+        "mov   edi, [ebp+8]\n"
+        "mov   ebx, ecx\n"
+        "rep stosb\n"
+    );
+}
