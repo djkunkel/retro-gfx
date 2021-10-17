@@ -12,20 +12,25 @@
 
 //game state
 int x_pos = 0;
-int y_pos = 20;
+int y_pos = 10;
 uint8 bg_color = 0;
+uint8 line_color=10;
 
 //update game state for this frame
 void update()
 {
     x_pos = (x_pos + 1) % VBE_WIDTH;
     y_pos = (int)(sin(x_pos/40.0)*100+120);
+    line_color = (line_color+1%256);
 }
 
 //draw this frame
 void draw()
 {
-    line(x_pos, y_pos, x_pos, 480-y_pos, 10);
+    line(x_pos, y_pos, x_pos, VBE_HEIGHT-y_pos, line_color);
+    line(x_pos+1, y_pos, x_pos+1, VBE_HEIGHT-y_pos, line_color);
+    line(x_pos+2, y_pos, x_pos+2, VBE_HEIGHT-y_pos, line_color);
+    line(x_pos+3, y_pos, x_pos+3, VBE_HEIGHT-y_pos, line_color);
 }
 
 //run a loop of drawing, swapping, syncing (todo)
@@ -37,21 +42,21 @@ int main(void)
     {
         return EXIT_FAILURE;
     }
-        
-    //get the address of the buffer so we can tell the user where it was 
-    uint32 buffAddress = &buffer;
 
-    //do our loop 3 times until we can read the keyboard or something better
-    for (int i = 0; i < VBE_WIDTH * 3; i++)
+    //do our loop
+
+    for (int i = 0; i < VBE_WIDTH-1; i++)
     {
         update();
         draw();
         vbe_Swap(bg_color);
+        // if(getchar()=='q')
+        //     break;
     }
 
-    vbe_End();
+    //getchar();
 
-    printf("The back buffer was at 0x%08x\n",buffAddress);
+    vbe_End();
 
     printf("This has been a production of the Retro Renaissance...\n");
 

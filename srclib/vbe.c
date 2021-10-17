@@ -7,11 +7,11 @@
 #include "vbe.h"
 
 
-//the actual vbe framebuffer
-static uint8 *screen;
 
 //the back buffer that the user builds frames to
 uint8 *buffer;
+uint8 *screen;
+uint16 scanline=0;
 
 
 int vbe_Init()
@@ -47,6 +47,8 @@ int vbe_Init()
         return 0;
     }
 
+   
+
     if ((modeInfo.ModeAttributes & 0x80) == 0 || modeInfo.PhysBasePtr == 0)
     {
         printf("Linear Frame Buffer not available!\n", err);
@@ -59,7 +61,25 @@ int vbe_Init()
         printf("Linear Frame Buffer at 0x%08X (physical) needs A20 enabled!\n", modeInfo.PhysBasePtr);
         return 0;
     }
+    
+    //set up draw pointers
     screen = modeInfo.PhysBasePtr;
+    buffer = screen+VBE_AREA;
+
+    printf("Bytes per scanline: %d\n", modeInfo.BytesPerScanLine);
+    printf("x res: %d\n", modeInfo.XResolution);
+    printf("y res: %d\n", modeInfo.YResolution);
+    printf("Image pages: %d\n", modeInfo.NumberOfImagePages);
+    printf("bits per pixel: %d\n", modeInfo.BitsPerPixel);
+
+    printf("Frame buffer start: 0x%08X\n", modeInfo.PhysBasePtr);
+    printf("Back buffer start: 0x%08X\n",buffer);
+    printf("Offscreen offset: 0x%08X\n", modeInfo.OffScreenMemoryOffset);
+    printf("Offscreen memory size: 0x%08X\n", modeInfo.OffScreenMemSize);
+    
+    
+    printf("Press enter to continue...\n");
+    getchar();
 
     // Set mode VBE_MODE (VBE_WIDTH x VBE_HEIGHT x 8bpp) with LFB
     if ((err = vbe_SetMode(VBE_MODE | (1 << 14) /*use LFB*/)) != 0 && err != 0x4F)
@@ -68,36 +88,57 @@ int vbe_Init()
         return 0;
     }
 
-    //create our backing buffer
-    buffer = malloc(VBE_AREA);
-    //printf("Buffer %08X", buffer);
-    if(buffer==0)
-    {
-        puts("Unable to allocate backing buffer!");
-        return 0;    
-    }
-
-    //clear the buffer
-    memset_32(buffer, 0, VBE_AREA);
+    
 
     return 1;
 }
 
+int vbe_SetDisplayStart(const uint16 scanline){
+    asm(
+        "mov   ax, 0x4f07\n"
+        "mov   bh, 0x00 \n"
+        "mov   bl, 0x80 \n" //0x80 says do the swap at vertical refresh
+        "mov   cx, 0x00 \n"
+        "mov   dx, [bp+8]\n"
+        "int   0x10\n"
+        "movzx eax,ax\n"
+    );
+}
+
+
 void vbe_Swap(uint8 color)
 {
-    //wait for sync
-    //not sure how to do this? use vga to determine? run some asm to check status bit?
     
-    //copy back buffer to frame buffer
-    memcpy_32(screen,buffer,VBE_AREA);
-    //clear back buffer
+    //swap buffers
+    uint8* temp = screen;
+    screen=buffer;
+    buffer=temp;
+
+    //set scanline for the display start
+    if(scanline==VBE_HEIGHT){
+        scanline=0;
+    }else{
+        scanline=VBE_HEIGHT;
+    }
+
+    //tell the video card the new scanline to start from
+    vbe_SetDisplayStart(scanline);
+    
+    //wait for sync, shouldn't be needed with 0x80 option in set display start
+    //s3 card on Packard Bell seemed to need Univbe to work correctly
+
+    // while (hw_InPortByte(0x3DA) & (1<<3));
+    // while (!(hw_InPortByte(0x3DA) & (1<<3)));
+  
+    //clear the back buffer
     memset_32(buffer,color,VBE_AREA);
+
 }
 
 void vbe_End()
 {
     //free back buffer
-    free(buffer);
+    //free(buffer);
     //switch back to text mode
     vbe_SetMode(0x3);
 }
@@ -120,8 +161,8 @@ int vbe_GetModeInfo(tVbeModeInfo *p, uint16 mode)
 {
     asm(
         "mov   ax, 0x4f01\n"
-        "mov   cx, [bp+12]\n"
-        "mov   edi, [bp+8]\n"
+        "mov   cx, [bp+12]\n" //mode number
+        "mov   edi, [bp+8]\n" //mode info struct
         "ror   edi, 4\n"
         "mov   es, di\n"
         "shr   edi, 28\n"

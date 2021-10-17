@@ -25,6 +25,7 @@ void vbe_Swap(uint8 color);
 int vbe_GetInfo(tVbeInfo *p);
 int vbe_GetModeInfo(tVbeModeInfo *p, uint16 mode);
 int vbe_SetMode(uint16 mode);
+int vbe_SetDisplayStart(const uint16 scanline);
 void pixel(int x, int y,
            uint8 color);
 void line(int x1, int y1,
